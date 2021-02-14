@@ -1,0 +1,37 @@
+A note before we begin: The following document is a short description of some features of Edit and covers some important information for startup. During your work with the program you can always press the <F1> key to get detailed help on the current topic or function.
+One 3.5" high-density (1.44 MB) disk drive (3.5" low-density (720K) or 5.25" high-density (1.2 MB) disks available separately with coupon enclosed).
+  If you encounter problems with other DPMI programs, especially 32-bit ones (e.g. Borland's TLINK.EXE) set up a DPMI host yourself before starting. As long as a DPMI using program provides you with the feature you can also disable the usage of DPMI.
+During May-June 1995, while Rob Hartill and the rest of the group focused on implementing new features for 0.7.x (like pre-forked child processes) and supporting the rapidly growing Apache user community, Robert Thau designed a new server architecture (code-named Shambhala) which included a modular structure and API for better extensibility, pool-based memory allocation, and an adaptive pre-forking process model. The group switched to this new server base in July and added the features from 0.7.x, resulting in Apache 0.8.8 (and its brethren) in August.
+  Edit runs fine under pure DOS, OS/2, Windows 3.1/3.11 and Windows 95. However, there are some important details for the external programs called by Edit. This is mostly due to the DPMI interface and/or the complex settings possible for the DOS boxes by OS/2 and Windows. Please refer in the online Help of Edit to the topics 'Configuring Edit' and 'Tutorial'.
+
+For OS/2 you will find the file 'OS2_SETT.TXT' which can be loaded in the 'Settings dialog' - 'Session' - 'DOS Settings' via the 'Load' Button. The most important setting is the DPMI Interface. It should always be set to 'Enabled' to avoid problems with TLINK v3.1 and other programs. Please adjust the memory amounts to your system. The numbers in 'OS2_SETT.TXT' are optimized for a 16 MByte system.
+Note: Don't forget to adjust the settings for all programs from which you want to start Edit, e.g. Norton Commander!
+
+Most problems with Windows 95 in earlier versions have been fixed. But: Depending on the video driver you are using it is not possible to run Edit windowed.
+The H2INC documentation on pages 649 and 651 lists _syscall and __syscall as C keywords recognized by H2INC. These are not recognized, and should be removed.
+Before testing the editor with Windows 95 create a PIF file for it by right-clicking on Edit's icon and choosing 'Preferences' from the pop-up menu. In the 'Screen' section you will find a check box. Enable 'Full screen' and you should be able to run Edit. After that try to run Edit windowed by pressing <Alt>+<Enter>. If you get a message saying 'It is not possible to run this application windowed...' your video driver isn't compatible with Edit.
+  It is recommended to run Edit under plain DOS because buggy assembler code can lock-up Windows 95.
+Following execution of the CPUID instruction with input value 1 in EAX, EAX[3:0] contains the stepping ID of the microprocessor, EAX[7:4] contains the model (the first model will be indicated by 0001B) and EAX[11:8] contains the family (5 for the Pentium). EAX[31:12], EBX, and ECX are reserved. The Pentium processor sets the feature register, EDX, to 1BFH, indicating which features the Pentium supports. A feature flag set to 1 indicates that the corresponding feature is supported.
+  The early Apache server was a big hit, but we all knew that the codebase needed a general overhaul and redesign.
+Edit uses our own handmade editor. Depending on your memory size (XMS, EMS and disk space) you can edit files up to 256 MB. The editor correctly handles all files, regardless of line length or number of lines.
+
+Using NCSA httpd 1.3 as a base, we added all of the published bug fixes and worthwhile enhancements we could find, tested the result on our own servers, and made the first official public release (0.6.2) of the Apache server in April 1995. By coincidence, NCSA restarted their own development during the same period, and Brandon Long and Beth Frank of the NCSA Server Development Team joined the list in March as honorary members so that the two projects could share ideas and fixes.
+  If you choose one of the SAPI modules and use Windows 95, be sure to download the DCOM update from http://download.microsoft.com/msdownload/dcom/95/x86/en/dcom95.exe" For the ISAPI module, an ISAPI 4.0 compliant Web server is required (tested on IIS 4.0, PWS 4.0 and IIS 5.0). IIS 3.0 is *NOT* supported; You should download and install the Windows NT 4.0 Option Pack with IIS 4.0 if you want native PHP support.
+Copy the file, php.ini-dist to your %WINDOWS% directory on Windows 95/98 or to your %SYSTEMROOT% directory under Windows NT, Windows 2000 or Windows XP and rename it to php.ini. Your %WINDOWS% or %SYSTEMROOT% directory is typically: c:\windows for Windows 95/98 c:\winnt or c:\winnt40 for NT/2000/XP servers We will refer to %SYSTEMROOT% for both %WINDOWS% or %SYSTEMROOT% throughout the text.
+  If you are using OmniHTTPd, do not follow the next step. Set the 'doc_root' to point to your webservers document_root. ex: c:\apache\htdocs or c:\webroot Choose which extensions you would like to load when PHP starts, noting that several extensions are already built into the Windows release, see the section about Windows extensions for details of the built-in extensions.
+You can uncomment the: 'extension=php_*.dll' lines in php.ini to load these extensions.
+Run Regedit. Navigate to: HKEY_LOCAL_MACHINE/System/CurrentControlSet/Services/W3Svc/Parameters/ScriptMap On the edit menu select: New->String Value.
+  At the end of the file, create a new object called x-httpd-php, by inserting this lines <Object name="x-httpd-php"> ObjectType fn="force-type" type="magnus-internal/x-httpd-php" Service fn=php4_execute </Object>
+Restart your web service and apply changes.
+Then looking into strace.txt:
+[...]
+729 3348 3248 NtOpenSection (0xe, {24, 24, 0x40, 0, 0, "php4ts.dll"}, ... ) == STATUS_OBJECT_NAME_NOT_FOUND
+731 3348 3248 NtQueryAttributesFile ({24, 0, 0x40, 0, 0, "\??\c:\php\php-4.2.1-win32\sapi\php4ts.dll"}, 1234824, ... ) == STATUS_OBJECT_NAME_NOT_FOUND
+733 3348 3248 NtQueryAttributesFile ({24, 108, 0x40, 0, 0, "php4ts.dll"}, 1234824, ... ) == STATUS_OBJECT_NAME_NOT_FOUND
+735 3348 3248 NtQueryAttributesFile ({24, 0, 0x40, 0, 0, "\??\C:\WINNT\System32\php4ts.dll"}, 1234824, ... ) == STATUS_OBJECT_NAME_NOT_FOUND
+[...]
+  This went on quiet some time for all directories in the %PATH% environment variable. The solution finally was to copy php4ts.dll in any of the directories searched by the System (I prefered to use c:\php\php-4.2.1-win32\sapi).
+- Fixed ext/yaz to not log if "yaz.log_file" php.ini option is not set. (Adam)
+- Fixed a bug in bundled libmysql (mysql bug #564). (Georg)
+- Fixed bug #25084 (ext/session: Fixed session.referer_check to be independent on register_globals). (Ilia)
+- Added md5_file() function which calculates the MD5 sum of a file. Patch by Alessandro Astarita <aleast@capri.it> (Derick)
